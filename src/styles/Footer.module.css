@@ -1,10 +1,41 @@
 .footer {
   width: 100%;
-  padding: 1rem;
+  padding: 1.5rem 2rem;
   text-align: center;
-  color: white;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  opacity: 0.3;
 }
 
 .text {
+  font-family: var(--font-display);
   font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+
+.text:hover {
+  color: var(--primary);
+}
+
+.text span {
+  color: var(--primary);
 }

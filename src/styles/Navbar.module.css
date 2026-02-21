@@ -4,26 +4,61 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.9);
-  border-bottom: 1px solid var(--gray-200);
+  padding: 0.875rem 1.5rem;
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  animation: slideDown 0.5s var(--ease-smooth) both;
+}
+
+.navbar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 5%;
+  right: 5%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  opacity: 0.4;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
   min-width: 180px;
+  text-decoration: none;
 }
 
 .logo {
-  width: 28px;
-  height: 28px;
+  width: 166px;
+  height: 38px;
+  transition: filter 0.3s var(--ease-smooth);
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 8px var(--primary));
 }
 
 .brandName {
+  font-family: var(--font-display);
   font-weight: 800;
-  color: var(--gray-900);
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--text-primary) 40%, var(--primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .links {
@@ -36,19 +71,52 @@
   border: none;
   background: transparent;
   cursor: pointer;
-  padding: 0.5rem 0.75rem;
-  border-radius: 8px;
-  font-weight: 700;
-  color: var(--gray-900);
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition:
+    color 0.2s var(--ease-smooth),
+    background 0.2s var(--ease-smooth),
+    transform 0.15s var(--ease-bounce);
+  position: relative;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 16px;
+  height: 2px;
+  background: var(--primary);
+  border-radius: 2px;
+  transition: transform 0.2s var(--ease-bounce);
 }
 
 .link:hover {
+  color: var(--text-primary);
   background: var(--gray-100);
 }
 
+.link:hover::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+.link:active {
+  transform: scale(0.96);
+}
+
 .active {
-  background: var(--gray-100);
-  color: var(--primary-dark);
+  color: var(--primary) !important;
+  background: rgba(10, 255, 157, 0.08) !important;
+}
+
+.active::after {
+  transform: translateX(-50%) scaleX(1) !important;
 }
 
 .auth {
@@ -58,31 +126,59 @@
 }
 
 .userName {
+  font-family: var(--font-display);
   font-weight: 700;
-  color: var(--gray-900);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  padding: 0.4rem 0.75rem;
+  background: var(--gray-100);
+  border-radius: 99px;
+  border: 1px solid var(--border);
 }
 
 .authBtn {
   border: none;
   background: var(--primary);
-  color: white;
+  color: var(--bg);
   cursor: pointer;
-  padding: 0.5rem 0.75rem;
-  border-radius: 8px;
+  padding: 0.5rem 1.1rem;
+  border-radius: 99px;
+  font-family: var(--font-display);
   font-weight: 800;
+  font-size: 0.875rem;
+  letter-spacing: 0.01em;
+  transition:
+    background 0.2s var(--ease-smooth),
+    box-shadow 0.2s var(--ease-smooth),
+    transform 0.15s var(--ease-bounce);
+  box-shadow: 0 0 0 0 var(--primary-glow);
 }
 
 .authBtn:hover {
   background: var(--primary-dark);
+  box-shadow: 0 0 20px var(--primary-glow);
+  transform: translateY(-1px);
+}
+
+.authBtn:active {
+  transform: scale(0.97) translateY(0);
 }
 
 @media (max-width: 768px) {
   .navbar {
-    align-items: flex-start;
-    flex-direction: column;
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
   }
 
   .brand {
     min-width: auto;
+  }
+
+  .links {
+    order: 3;
+    width: 100%;
+    border-top: 1px solid var(--border);
+    padding-top: 0.5rem;
+    margin-top: 0.25rem;
   }
 }

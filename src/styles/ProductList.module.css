@@ -1,47 +1,189 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2.5rem 2rem;
 }
 
+/* Header */
 .header {
   text-align: center;
   margin-bottom: 3rem;
+  position: relative;
+}
+
+.header::before {
+  content: 'PRODUCTS';
+  position: absolute;
+  top: -1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-size: 5rem;
+  font-weight: 900;
+  color: rgba(255,255,255,0.025);
+  white-space: nowrap;
+  pointer-events: none;
+  letter-spacing: 0.15em;
+  user-select: none;
 }
 
 .title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #1f2937;
-  margin-bottom: 0.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  color: var(--text-primary);
+  margin-bottom: 0.6rem;
+  letter-spacing: -0.03em;
+  animation: heroTitle 0.6s var(--ease-smooth) 0.1s both;
+}
+
+.title span {
+  background: linear-gradient(135deg, var(--primary) 0%, #00e5ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .subtitle {
-  font-size: 1.125rem;
-  color: #e8edf7;
-  max-width: 600px;
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  max-width: 520px;
   margin: 0 auto;
+  font-weight: 300;
+  animation: heroTitle 0.6s var(--ease-smooth) 0.2s both;
 }
 
+@keyframes heroTitle {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+  animation: heroTitle 0.5s var(--ease-smooth) 0.3s both;
+}
+
+.btnAdd {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: var(--bg);
+  border: none;
+  border-radius: 99px;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    filter 0.2s var(--ease-smooth),
+    transform 0.18s var(--ease-bounce),
+    box-shadow 0.25s var(--ease-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.btnAdd::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.btnAdd:hover {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px var(--primary-glow);
+}
+
+.btnAdd:hover::before {
+  opacity: 1;
+}
+
+.btnAdd:active {
+  transform: scale(0.96) translateY(0);
+}
+
+.btnAdd:focus-visible {
+  outline: 3px solid var(--border-active);
+  outline-offset: 3px;
+}
+
+/* Grid */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 1.75rem;
   margin-bottom: 2rem;
 }
 
+/* Stagger card animations via nth-child */
+.grid > :nth-child(1)  { --delay: 0ms; }
+.grid > :nth-child(2)  { --delay: 60ms; }
+.grid > :nth-child(3)  { --delay: 120ms; }
+.grid > :nth-child(4)  { --delay: 180ms; }
+.grid > :nth-child(5)  { --delay: 240ms; }
+.grid > :nth-child(6)  { --delay: 300ms; }
+.grid > :nth-child(7)  { --delay: 360ms; }
+.grid > :nth-child(8)  { --delay: 420ms; }
+.grid > :nth-child(n+9){ --delay: 480ms; }
+
+/* Empty / loading states */
+.emptyState {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 5rem 2rem;
+  color: var(--text-muted);
+}
+
+.emptyState p {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+}
+
 /* Responsive */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .container {
-    padding: 1rem;
+    padding: 1.5rem 1rem;
   }
 
-  .title {
-    font-size: 2rem;
+  .header {
+    margin-bottom: 2rem;
+  }
+
+  .header::before {
+    font-size: 3rem;
   }
 
   .grid {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1.25rem;
+  }
+
+  .toolbar {
+    justify-content: stretch;
+  }
+
+  .btnAdd {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 1fr;
   }
 }

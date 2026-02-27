@@ -121,7 +121,7 @@
   margin-bottom: 2rem;
 }
 
-/* Stagger card animations via nth-child */
+/* Stagger card animations */
 .grid > :nth-child(1)  { --delay: 0ms; }
 .grid > :nth-child(2)  { --delay: 60ms; }
 .grid > :nth-child(3)  { --delay: 120ms; }
@@ -132,7 +132,7 @@
 .grid > :nth-child(8)  { --delay: 420ms; }
 .grid > :nth-child(n+9){ --delay: 480ms; }
 
-/* Empty / loading states */
+/* Empty state */
 .emptyState {
   grid-column: 1 / -1;
   text-align: center;
@@ -144,6 +144,58 @@
   font-family: var(--font-display);
   font-size: 1.1rem;
   margin-top: 0.5rem;
+}
+
+/* ─── Modal overlay ─────────────────────────────────────────── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 1.5rem;
+  animation: overlayFadeIn 0.2s ease both;
+}
+
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modalContent {
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: var(--radius-lg);
+  animation: modalPop 0.3s var(--ease-bounce) both;
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.modalContent::-webkit-scrollbar {
+  width: 4px;
+}
+
+.modalContent::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 99px;
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.93) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 /* Responsive */
@@ -179,6 +231,18 @@
   .btnAdd {
     width: 100%;
     text-align: center;
+  }
+
+  .modalOverlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modalContent {
+    max-width: 100%;
+    max-height: 92vh;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
   }
 }
 

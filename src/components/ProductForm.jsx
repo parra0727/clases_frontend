@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import styles from "../styles/ProductForm.module.css";
 
 const emptyValues = {
@@ -32,8 +31,6 @@ function ProductForm({ initialValues, onSubmit, onCancel, isEditing = false }) {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-
-    // prev = estado anterior del formulario (NO es prop)
     setValues((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -44,7 +41,6 @@ function ProductForm({ initialValues, onSubmit, onCancel, isEditing = false }) {
     const category = values.category.trim();
     const image = values.image.trim();
     const description = values.description.trim();
-
     const price = Number(values.price);
     const stock = Number(values.stock);
 
@@ -74,13 +70,15 @@ function ProductForm({ initialValues, onSubmit, onCancel, isEditing = false }) {
           {isEditing ? "Editar producto" : "Agregar producto"}
         </h2>
         <p className={styles.subtitle}>
-          Completa el formulario y guarda los cambios.
+          {isEditing
+            ? "Modificá los campos que querés actualizar."
+            : "Completá el formulario para agregar un nuevo producto."}
         </p>
       </header>
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <label className={styles.field}>
-          <span className={styles.label}>Nombre</span>
+          <span className={styles.label}>Nombre *</span>
           <input
             className={styles.input}
             name="name"
@@ -103,7 +101,7 @@ function ProductForm({ initialValues, onSubmit, onCancel, isEditing = false }) {
 
         <div className={styles.row}>
           <label className={styles.field}>
-            <span className={styles.label}>Precio</span>
+            <span className={styles.label}>Precio *</span>
             <input
               className={styles.input}
               name="price"
@@ -116,7 +114,7 @@ function ProductForm({ initialValues, onSubmit, onCancel, isEditing = false }) {
           </label>
 
           <label className={styles.field}>
-            <span className={styles.label}>Stock</span>
+            <span className={styles.label}>Stock *</span>
             <input
               className={styles.input}
               name="stock"
@@ -153,7 +151,7 @@ function ProductForm({ initialValues, onSubmit, onCancel, isEditing = false }) {
         </label>
 
         <div className={styles.actions}>
-          {onCancel ? (
+          {onCancel && (
             <button
               className={styles.btnSecondary}
               type="button"
@@ -161,10 +159,9 @@ function ProductForm({ initialValues, onSubmit, onCancel, isEditing = false }) {
             >
               Cancelar
             </button>
-          ) : null}
-
+          )}
           <button className={styles.btnPrimary} type="submit">
-            {isEditing ? "Guardar cambios" : "Agregar producto"}
+            {isEditing ? "💾 Guardar cambios" : "➕ Agregar producto"}
           </button>
         </div>
       </form>

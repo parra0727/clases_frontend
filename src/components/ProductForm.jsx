@@ -43,10 +43,12 @@ function ProductForm({ initialValues, onSubmit, onCancel, isEditing = false }) {
     const description = values.description.trim();
     const price = Number(values.price);
     const stock = Number(values.stock);
+    const rating = Number(values.rating);
 
     if (!name) return;
     if (!Number.isFinite(price) || price <= 0) return;
     if (!Number.isFinite(stock) || stock < 0) return;
+    if (!Number.isFinite(rating) || rating < 1 || rating > 5) return;
 
     onSubmit({
       ...initialValues,
@@ -56,6 +58,7 @@ function ProductForm({ initialValues, onSubmit, onCancel, isEditing = false }) {
       stock,
       image,
       description,
+      rating,
     });
 
     if (!isEditing) {
@@ -135,6 +138,20 @@ function ProductForm({ initialValues, onSubmit, onCancel, isEditing = false }) {
             value={values.image}
             onChange={handleChange}
             placeholder="https://..."
+          />
+        </label>
+
+        <label className={styles.field}>
+          <span className={styles.label}>Rating (1-5)</span>
+          <input
+            className={styles.input}
+            name="rating"
+            type="number"
+            min="1"
+            max="5"
+            value={values.rating}
+            onChange={handleChange}
+            placeholder="Ej: 4.5"
           />
         </label>
 

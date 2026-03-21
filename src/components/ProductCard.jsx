@@ -13,6 +13,8 @@ function ProductCard({
   onDetails,
   onEdit,
   onDelete,
+  onAddToCart,
+  disableAddToCart,
 }) {
   const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
@@ -39,7 +41,7 @@ function ProductCard({
         <p className={styles.productDescription}>{description}</p>
         <p className={styles.productStock}>Stock: {stock}</p>
         <div className={styles.productFooter}>
-          <span className={styles.productPrice}>{(price)}</span>
+          <span className={styles.productPrice}>{price}</span>
           <button
             className={`${styles.btnLike} ${isLiked ? styles.liked : ''}`}
             onClick={handleLike}
@@ -47,6 +49,17 @@ function ProductCard({
             {isLiked ? '❤️' : '🤍'} {likes} Me gusta
           </button>
         </div>
+
+        {onAddToCart ? (
+          <button
+            type="button"
+            className={styles.btnAddToCart}
+            onClick={onAddToCart}
+            disabled={disableAddToCart}
+          >
+            {disableAddToCart ? 'Sin stock disponible' : '🛒 Agregar al carrito'}
+          </button>
+        ) : null}
 
         {onDetails || onEdit || onDelete ? (
           <div className={styles.cardActions}>

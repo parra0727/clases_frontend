@@ -2,7 +2,7 @@ import styles from "../styles/Header.module.css";
 
 import Navbar from "./Navbar";
 
-function Header({ activePage, onNavigate, user, onSignIn, onSignOut }) {
+function Header({ activePage, onNavigate, user, onSignIn, onSignOut, cartItemCount }) {
   return (
     <header className={styles.header}>
       <Navbar
@@ -11,6 +11,7 @@ function Header({ activePage, onNavigate, user, onSignIn, onSignOut }) {
         user={user}
         onSignIn={onSignIn}
         onSignOut={onSignOut}
+        cartItemCount={cartItemCount}
       />
     </header>
   );

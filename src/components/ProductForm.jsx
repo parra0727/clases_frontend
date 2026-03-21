@@ -8,6 +8,7 @@ const emptyValues = {
   stock: "",
   image: "",
   description: "",
+  rating: "",
 };
 
 function ProductForm({ initialValues, onSubmit, onCancel, isEditing = false }) {
@@ -23,6 +24,7 @@ function ProductForm({ initialValues, onSubmit, onCancel, isEditing = false }) {
         stock: initialValues.stock ?? "",
         image: initialValues.image ?? "",
         description: initialValues.description ?? "",
+        rating: initialValues.rating ?? "",
       });
     } else {
       setValues(emptyValues);

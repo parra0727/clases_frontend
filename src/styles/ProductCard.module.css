@@ -62,7 +62,7 @@
   transform: scale(1.05);
 }
 
-/* Content — cardActions vive acá adentro */
+/* Content */
 .productInfo {
   padding: 1.25rem 1.5rem 1.25rem;
   display: flex;
@@ -182,9 +182,7 @@
   border-color: rgba(255,255,255,0.15);
 }
 
-.btnLike:active {
-  transform: scale(0.92);
-}
+.btnLike:active { transform: scale(0.92); }
 
 .btnLike.liked {
   background: rgba(255, 77, 109, 0.12);
@@ -196,7 +194,39 @@
   background: rgba(255, 77, 109, 0.18);
 }
 
-/* Actions — dentro de productInfo, separado del footer con margen */
+/* Botón agregar al carrito */
+.btnAddToCart {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  margin-top: 0.75rem;
+  background: rgba(10, 255, 157, 0.1);
+  color: var(--primary);
+  border: 1px solid rgba(10, 255, 157, 0.2);
+  transition:
+    background 0.2s var(--ease-smooth),
+    transform 0.15s var(--ease-bounce),
+    box-shadow 0.2s var(--ease-smooth);
+}
+
+.btnAddToCart:hover:not(:disabled) {
+  background: rgba(10, 255, 157, 0.18);
+  box-shadow: 0 4px 16px var(--primary-glow);
+}
+
+.btnAddToCart:active:not(:disabled) { transform: scale(0.97); }
+
+.btnAddToCart:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Actions */
 .cardActions {
   display: flex;
   gap: 0.5rem;
@@ -223,9 +253,7 @@
 
 .btnEdit:active,
 .btnDetails:active,
-.btnDelete:active {
-  transform: scale(0.95);
-}
+.btnDelete:active { transform: scale(0.95); }
 
 .btnDetails {
   background: rgba(255, 255, 255, 0.06);

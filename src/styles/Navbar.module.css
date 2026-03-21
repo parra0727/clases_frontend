@@ -181,4 +181,18 @@
     padding-top: 0.5rem;
     margin-top: 0.25rem;
   }
+  .badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 99px;
+  background: var(--primary);
+  color: var(--bg);
+  font-size: 0.7rem;
+  font-weight: 800;
+  margin-left: 4px;
+  }
 }

@@ -2,7 +2,7 @@ import styles from "../styles/Navbar.module.css";
 
 import logo from "../assets/react.svg";
 
-function Navbar({ activePage, onNavigate, user, onSignIn, onSignOut }) {
+function Navbar({ activePage, onNavigate, user, onSignIn, onSignOut, cartItemCount }) {
   const userLabel = user?.name ?? "Invitado";
   const isLoggedIn = Boolean(user);
 
@@ -34,6 +34,9 @@ function Navbar({ activePage, onNavigate, user, onSignIn, onSignOut }) {
           onClick={() => onNavigate("cart")}
         >
           Carrito
+          {cartItemCount > 0 ? (
+            <span className={styles.badge}>{cartItemCount}</span>
+          ) : null}
         </button>
       </div>
 

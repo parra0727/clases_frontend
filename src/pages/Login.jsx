@@ -39,21 +39,24 @@ function Login() {
     clearAuthError();
   };
 
-  const cartIsHydrating = isRemoteMode && cartHydrationStatus === 'hydrating';
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (cartIsHydrating) {
-      setFormError('Preparando el carrito antes de iniciar sesión...');
+    if (isRemoteMode && !isCartReady) {
+      setFormError(
+        cartHydrationStatus === 'error'
+          ? cartError || 'No fue posible preparar el carrito para iniciar sesión.'
+          : 'Preparando el carrito antes de iniciar sesión.'
+      );
       return;
     }
 
-    // Si el carrito falló, se intenta login sin fusión de carrito invitado
-    const guestCartId =
-      isRemoteMode && cartHydrationStatus === 'ready'
-        ? cartService.getGuestCartIdForAuth(cart)
-        : '';
+    const guestCartId = cartService.getGuestCartIdForAuth(cart);
+
+    if (isRemoteMode && !guestCartId) {
+      setFormError('No fue posible preparar un carrito invitado válido para iniciar sesión.');
+      return;
+    }
 
     const result = await login({
       email: values.email.trim(),
@@ -70,10 +73,13 @@ function Login() {
     navigate(nextPath, { replace: true });
   };
 
-  const submitDisabled = isSubmittingAuth || cartIsHydrating;
-  const blockedMessage = cartIsHydrating
-    ? 'Preparando carrito para conservar tus productos antes de autenticarte...'
-    : '';
+  const submitDisabled = isSubmittingAuth || (isRemoteMode && !isCartReady);
+  const blockedMessage =
+    isRemoteMode && !isCartReady
+      ? cartHydrationStatus === 'error'
+        ? cartError || 'No fue posible preparar el carrito para iniciar sesión.'
+        : 'Preparando carrito para conservar tus productos antes de autenticarte...'
+      : '';
 
   return (
     <section className={styles.container}>

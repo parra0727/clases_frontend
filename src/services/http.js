@@ -16,18 +16,15 @@ export async function requestJson(path, options = {}) {
     throw new Error('La API remota está deshabilitada en este entorno.');
   }
 
-  const url = buildApiUrl(path);
-  const method = String(options.method ?? 'GET').toUpperCase();
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), appConfig.apiTimeoutMs);
   const { body, headers, signal, token, ...restOptions } = options;
 
   try {
-    const response = await fetch(url, {
+    const response = await fetch(buildApiUrl(path), {
       ...restOptions,
-      method,
       body: body ? JSON.stringify(body) : undefined,
-      credentials: restOptions.credentials ?? 'same-origin',
+      credentials: restOptions.credentials ?? 'include',
       headers: {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -58,18 +55,10 @@ export async function requestJson(path, options = {}) {
       error.status = response.status;
       error.code = data?.code ?? '';
       error.payload = data;
-      console.error(`[API] ${method} ${url} → HTTP ${response.status}`, data ?? '');
       throw error;
     }
 
     return data;
-  } catch (err) {
-    if (err.name === 'AbortError') {
-      console.error(`[API] ${method} ${url} → Timeout (${appConfig.apiTimeoutMs}ms)`);
-    } else if (!err.status) {
-      console.error(`[API] ${method} ${url} → Error de red:`, err.message);
-    }
-    throw err;
   } finally {
     window.clearTimeout(timeoutId);
   }

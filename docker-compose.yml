@@ -1,9 +1,0 @@
-services:
-  frontend:
-    build: .
-    ports:
-      - "3000:80"
-    # extra_hosts permite que nginx resuelva host.docker.internal en Linux
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    restart: unless-stopped

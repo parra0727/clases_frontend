@@ -9,7 +9,7 @@ const REMOTE_STORAGE_OPTIONS = Object.freeze({ seedFallback: false });
 
 const normalizeId = (value) => {
   const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : 0;
+  return Number.isFinite(parsed) ? parsed : null;
 };
 
 const toAsyncResult = (callback) => Promise.resolve().then(callback);
@@ -261,6 +261,17 @@ function getProductsAsync(filters = {}) {
   }).then((response) => applyFilters(persistRemoteProducts(extractCollection(response)), filters));
 }
 
+function getAdminProductsAsync() {
+  if (!appConfig.useRemoteApi) {
+    return toAsyncResult(() => loadProducts());
+  }
+
+  return requestJson('/admin/products', {
+    method: 'GET',
+    token: loadSessionToken(),
+  }).then((response) => persistRemoteProducts(extractCollection(response)));
+}
+
 function getProductByIdAsync(productId) {
   const normalizedId = normalizeId(productId);
 
@@ -294,7 +305,7 @@ function createProductAsync(product, currentProducts = loadProducts()) {
       method: 'POST',
       body,
       token: loadSessionToken(),
-    }).then(() => getProductsAsync())
+    }).then(() => getAdminProductsAsync())
   );
 }
 
@@ -308,8 +319,25 @@ function updateProductAsync(updatedProduct, currentProducts = loadProducts()) {
       method: 'PUT',
       body,
       token: loadSessionToken(),
-    }).then(() => getProductsAsync())
+    }).then(() => getAdminProductsAsync())
   );
+}
+
+function toggleProductStatusAsync(productId, isActive) {
+  const normalizedId = normalizeId(productId);
+
+  if (!appConfig.useRemoteApi) {
+    return toAsyncResult(() => {
+      const product = getProductById(normalizedId);
+      return updateProduct({ ...product, isActive }, []);
+    });
+  }
+
+  return requestJson(`/admin/products/${normalizedId}`, {
+    method: 'PATCH',
+    token: loadSessionToken(),
+    body: { isActive },
+  }).then(() => getAdminProductsAsync());
 }
 
 function deleteProductAsync(productId, currentProducts = loadProducts()) {
@@ -322,7 +350,7 @@ function deleteProductAsync(productId, currentProducts = loadProducts()) {
   return requestJson(`/admin/products/${normalizedId}`, {
     method: 'DELETE',
     token: loadSessionToken(),
-  }).then(() => getProductsAsync());
+  }).then(() => getAdminProductsAsync());
 }
 
 const productService = {
@@ -330,11 +358,13 @@ const productService = {
   createProductAsync,
   deleteProduct,
   deleteProductAsync,
+  getAdminProductsAsync,
   getProductById,
   getProductByIdAsync,
   getProducts,
   getProductsAsync,
   persistProducts,
+  toggleProductStatusAsync,
   updateProduct,
   updateProductAsync,
 };

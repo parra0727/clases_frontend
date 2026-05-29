@@ -254,10 +254,16 @@ async function clearCartAsync() {
   }
 
   const token = await ensureRemoteCartSession();
-  await requestJson('/cart/items', {
-    method: 'DELETE',
-    token,
-  });
+
+  try {
+    await requestJson('/cart/items', {
+      method: 'DELETE',
+      token,
+    });
+  } catch (error) {
+    if (error?.status < 500) throw error;
+    // Backend failed to clear cart; proceed with local clear anyway.
+  }
 
   return saveCart({ ...loadCart(), items: [], updatedAt: new Date().toISOString() });
 }
@@ -278,7 +284,8 @@ async function mergeCartAsync(guestCartId) {
     },
   });
 
-  return normalizeCartResponse(response);
+  // Ensure the merged cart is persisted as a user cart (not guest).
+  return normalizeCartResponse({ ...response, isGuest: false });
 }
 
 const cartService = {

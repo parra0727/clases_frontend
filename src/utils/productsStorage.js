@@ -86,7 +86,9 @@ const normalizeProducts = (products, options = {}) => {
     return options.seedFallback === false ? [] : seedProducts;
   }
 
-  return products.map((product) => normalizeProduct(product, options));
+  return products
+    .map((product) => normalizeProduct(product, options))
+    .filter((product) => product.id > 0);
 };
 
 export function loadProducts(options = {}) {

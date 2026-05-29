@@ -177,14 +177,14 @@ function OrderDetail() {
           <h2 className={styles.sectionTitle}>Cliente</h2>
           <div className={styles.infoList}>
             <p>
-              <strong>{order.customer.fullName}</strong>
+              <strong>{order.customer?.fullName ?? order.userFullName ?? '—'}</strong>
             </p>
-            <p>{order.customer.email}</p>
-            <p>{order.customer.phone}</p>
-            {shippingAddressLines.length === 0 ? <p>{order.customer.address}</p> : null}
+            <p>{order.customer?.email ?? order.userEmail ?? '—'}</p>
+            <p>{order.customer?.phone ?? '—'}</p>
+            {shippingAddressLines.length === 0 ? <p>{order.customer?.address}</p> : null}
             {shippingAddressLines.length === 0 ? (
               <p>
-                {order.customer.city} - {order.customer.postalCode}
+                {order.customer?.city} - {order.customer?.postalCode}
               </p>
             ) : null}
           </div>
@@ -195,19 +195,19 @@ function OrderDetail() {
           <div className={styles.totalRows}>
             <div className={styles.totalRow}>
               <span>Subtotal</span>
-              <strong>{formatCOP(order.totals.subtotal)}</strong>
+              <strong>{formatCOP(order.totals?.subtotal ?? 0)}</strong>
             </div>
             <div className={styles.totalRow}>
               <span>IVA</span>
-              <strong>{formatCOP(order.totals.tax)}</strong>
+              <strong>{formatCOP(order.totals?.tax ?? 0)}</strong>
             </div>
             <div className={styles.totalRow}>
               <span>Envio</span>
-              <strong>{formatCOP(order.totals.shipping)}</strong>
+              <strong>{formatCOP(order.totals?.shipping ?? 0)}</strong>
             </div>
             <div className={`${styles.totalRow} ${styles.totalRowStrong}`}>
               <span>Total</span>
-              <strong>{formatCOP(order.totals.total)}</strong>
+              <strong>{formatCOP(order.totals?.total ?? 0)}</strong>
             </div>
           </div>
         </section>

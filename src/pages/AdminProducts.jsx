@@ -29,7 +29,7 @@ function AdminProducts() {
 
       try {
         const [nextProducts, nextCategories] = await Promise.all([
-          productService.getProductsAsync(),
+          productService.getAdminProductsAsync(),
           categoryService.getCategoriesAsync(),
         ]);
 
@@ -125,6 +125,21 @@ function AdminProducts() {
 
     if (editingProduct?.id === productId) {
       handleCloseForm();
+    }
+  };
+
+  const handleToggleProductStatus = async (productId, isActive) => {
+    setSubmitError('');
+
+    try {
+      const nextProducts = await productService.toggleProductStatusAsync(productId, isActive);
+      setProductsState(nextProducts);
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error && error.message
+          ? error.message
+          : 'No fue posible cambiar el estado del producto.'
+      );
     }
   };
 
@@ -253,8 +268,9 @@ function AdminProducts() {
                   isAvailable={product.isAvailable}
                   image={product.image}
                   description={product.description}
-                  onDelete={() => handleDeleteProduct(product.id)}
                   onEdit={() => handleEditStart(product)}
+                  onToggleStatus={handleToggleProductStatus}
+                  onDelete={() => handleDeleteProduct(product.id)}
                 />
               ))}
             </div>

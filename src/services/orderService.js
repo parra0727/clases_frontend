@@ -20,6 +20,9 @@ const normalizeOrderPayload = (order) => ({
   orderNumber: String(order?.orderNumber ?? createLocalOrderNumber()),
   status: String(order?.status ?? 'PENDING'),
   createdAt: order?.createdAt ?? new Date().toISOString(),
+  customer: order?.customer ?? null,
+  totals: order?.totals ?? { subtotal: 0, tax: 0, shipping: 0, total: 0 },
+  items: Array.isArray(order?.items) ? order.items : [],
 });
 
 function getOrders() {
@@ -43,7 +46,17 @@ function getOrdersAsync() {
     return requestJson('/orders/me', {
       method: 'GET',
       token: loadSessionToken(),
-    }).then((response) => saveOrders(Array.isArray(response) ? response : []));
+    })
+      .then((response) => saveOrders(Array.isArray(response) ? response : []))
+      .catch((error) => {
+        // Backend returns 500 for users with no orders instead of [].
+        // Treat any server-side error as an empty list so the UI doesn't
+        // show a crash message on a freshly registered account.
+        if (error?.status >= 500) {
+          return saveOrders([]);
+        }
+        throw error;
+      });
   }
 
   return toAsyncResult(() => getOrders());
@@ -74,16 +87,51 @@ function createOrderAsync(order) {
   }
 
   const cart = loadCart();
+  const cartId = Number(cart.id);
+  const shippingAddressId = Number(
+    order?.shippingAddress?.id ?? order?.shippingAddressId ?? ''
+  );
+  const billingAddressId = Number(
+    order?.billingAddress?.id ?? order?.billingAddressId ?? ''
+  );
+
+  if (!Number.isFinite(cartId) || cartId <= 0) {
+    return Promise.reject(
+      new Error(
+        'El carrito no está sincronizado con el servidor. Recarga la página e intenta de nuevo.'
+      )
+    );
+  }
+
+  if (!Number.isFinite(shippingAddressId) || shippingAddressId <= 0) {
+    return Promise.reject(new Error('Selecciona una dirección de envío válida.'));
+  }
+
+  if (!Number.isFinite(billingAddressId) || billingAddressId <= 0) {
+    return Promise.reject(new Error('Selecciona una dirección de facturación válida.'));
+  }
 
   return requestJson('/orders/checkout', {
     method: 'POST',
     token: loadSessionToken(),
     body: {
-      cartId: cart.id,
-      shippingAddressId: order?.shippingAddress?.id ?? order?.shippingAddressId,
-      billingAddressId: order?.billingAddress?.id ?? order?.billingAddressId,
+      cartId,
+      shippingAddressId,
+      billingAddressId,
     },
-  }).then((response) => saveOrder(normalizeOrderPayload(response)));
+  }).then((response) =>
+    saveOrder(
+      normalizeOrderPayload({
+        customer: order.customer,
+        totals: order.totals,
+        ...response,
+        items:
+          Array.isArray(response?.items) && response.items.length > 0
+            ? response.items
+            : (order.items ?? []),
+      })
+    )
+  );
 }
 
 const orderService = {

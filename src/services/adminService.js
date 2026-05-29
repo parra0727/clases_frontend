@@ -11,10 +11,12 @@ function getDashboardSnapshot() {
 }
 
 async function getDashboardSnapshotAsync() {
+  const settle = (promise, fallback) => promise.catch(() => fallback);
+
   const [products, orders, users] = await Promise.all([
-    productService.getProductsAsync(),
-    orderService.getOrdersAsync(),
-    authService.getAdminUsersAsync(),
+    settle(productService.getProductsAsync(), []),
+    settle(orderService.getOrdersAsync(), []),
+    settle(authService.getAdminUsersAsync(), []),
   ]);
 
   return {

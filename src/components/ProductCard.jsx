@@ -22,29 +22,27 @@ function ProductCard({
   onDetails,
   onEdit,
   onDelete,
+  onToggleStatus,
   disableAddToCart = false,
 }) {
-  const [likes, setLikes] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
+  const [likeState, setLikeState] = useState({ liked: false, count: 0 });
   const productCategory = categoryName ?? category;
   const productStock = Number.isFinite(Number(stockQty)) ? Number(stockQty) : stock;
   const cannotAddToCart =
     disableAddToCart || !isActive || !isAvailable || Number(productStock) <= 0;
 
   const handleLike = () => {
-    if (isLiked) {
-      setLikes(likes - 1);
-      setIsLiked(false);
-    } else {
-      setLikes(likes + 1);
-      setIsLiked(true);
-    }
+    setLikeState((prev) => ({
+      liked: !prev.liked,
+      count: prev.liked ? prev.count - 1 : prev.count + 1,
+    }));
   };
 
   return (
-    <article className={styles.productCard}>
+    <article className={`${styles.productCard} ${!isActive ? styles.productCardInactive : ''}`}>
       <OptionalImage src={image} alt={name} className={styles.productImage} />
       <div className={styles.productInfo}>
+        {!isActive && <span className={styles.inactiveBadge}>Inactivo</span>}
         <span className={styles.productCategory}>{productCategory}</span>
         <h3 className={styles.productName}>{name}</h3>
         {Number.isFinite(Number(rating)) ? (
@@ -55,14 +53,15 @@ function ProductCard({
         <div className={styles.productFooter}>
           <span className={styles.productPrice}>{formatCOP(price)}</span>
           <button
-            className={`${styles.btnLike} ${isLiked ? styles.liked : ''}`}
+            type="button"
+            className={`${styles.btnLike} ${likeState.liked ? styles.liked : ''}`}
             onClick={handleLike}
           >
-            {isLiked ? '❤️' : '🤍'} {likes} Me gusta
+            {likeState.liked ? '❤️' : '🤍'} {likeState.count} Me gusta
           </button>
         </div>
 
-        {onAddToCart || onDetails || onEdit || onDelete ? (
+        {onAddToCart || onDetails || onEdit || onDelete || onToggleStatus ? (
           <div className={styles.cardActions}>
             {onAddToCart ? (
               <button
@@ -98,9 +97,19 @@ function ProductCard({
               </button>
             ) : null}
 
+            {onToggleStatus ? (
+              <button
+                type="button"
+                className={isActive ? styles.btnDeactivate : styles.btnActivate}
+                onClick={() => onToggleStatus(id, !isActive)}
+              >
+                {isActive ? 'Desactivar' : 'Activar'}
+              </button>
+            ) : null}
+
             {onDelete ? (
               <button type="button" className={styles.btnDelete} onClick={onDelete}>
-                Eliminar
+                {onToggleStatus ? 'Eliminar permanente' : 'Eliminar'}
               </button>
             ) : null}
           </div>

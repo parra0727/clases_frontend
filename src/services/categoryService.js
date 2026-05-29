@@ -5,7 +5,7 @@ import { requestJson } from './http';
 
 const normalizeId = (value) => {
   const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : 0;
+  return Number.isFinite(parsed) ? parsed : null;
 };
 
 const slugify = (value) =>
@@ -39,7 +39,7 @@ const extractCollection = (payload) => {
 
 const normalizeCategory = (category, parentCategory = null) => {
   const name = String(category?.name ?? category?.categoryName ?? '').trim() || 'Sin categoría';
-  const id = normalizeId(category?.id);
+  const id = normalizeId(category?.id ?? category?.categoryId);
   const parentId =
     category?.parentId === null || category?.parentId === undefined
       ? (parentCategory?.id ?? null)

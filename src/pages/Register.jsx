@@ -37,26 +37,12 @@ function Register() {
       return;
     }
 
-    if (isRemoteMode && !isCartReady) {
-      setFormError(
-        cartHydrationStatus === 'error'
-          ? cartError || 'No fue posible preparar el carrito para crear la cuenta.'
-          : 'Preparando el carrito antes de crear la cuenta.'
-      );
-      return;
-    }
-
-    const guestCartId = cartService.getGuestCartIdForAuth(cart);
-
-    if (isRemoteMode && !guestCartId) {
-      setFormError('No fue posible preparar un carrito invitado válido para crear la cuenta.');
-      return;
-    }
+    const guestCartId = isRemoteMode ? cartService.getGuestCartIdForAuth(cart) : '';
 
     const result = await register({
       firstName: values.firstName,
       lastName: values.lastName,
-      guestCartId,
+      ...(guestCartId ? { guestCartId } : {}),
       email: values.email,
       password: values.password,
       phone: values.phone,
@@ -70,12 +56,10 @@ function Register() {
     navigate('/user/profile', { replace: true });
   };
 
-  const submitDisabled = isSubmittingAuth || (isRemoteMode && !isCartReady);
+  const submitDisabled = isSubmittingAuth || (isRemoteMode && cartHydrationStatus === 'hydrating');
   const blockedMessage =
-    isRemoteMode && !isCartReady
-      ? cartHydrationStatus === 'error'
-        ? cartError || 'No fue posible preparar el carrito para crear la cuenta.'
-        : 'Preparando carrito para conservar tus productos antes de autenticarte...'
+    isRemoteMode && cartHydrationStatus === 'hydrating'
+      ? 'Preparando carrito para conservar tus productos antes de autenticarte...'
       : '';
 
   return (

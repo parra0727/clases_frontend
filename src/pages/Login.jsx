@@ -42,25 +42,11 @@ function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (isRemoteMode && !isCartReady) {
-      setFormError(
-        cartHydrationStatus === 'error'
-          ? cartError || 'No fue posible preparar el carrito para iniciar sesión.'
-          : 'Preparando el carrito antes de iniciar sesión.'
-      );
-      return;
-    }
-
-    const guestCartId = cartService.getGuestCartIdForAuth(cart);
-
-    if (isRemoteMode && !guestCartId) {
-      setFormError('No fue posible preparar un carrito invitado válido para iniciar sesión.');
-      return;
-    }
+    const guestCartId = isRemoteMode ? cartService.getGuestCartIdForAuth(cart) : '';
 
     const result = await login({
       email: values.email.trim(),
-      guestCartId,
+      ...(guestCartId ? { guestCartId } : {}),
       password: values.password,
     });
 
@@ -73,12 +59,10 @@ function Login() {
     navigate(nextPath, { replace: true });
   };
 
-  const submitDisabled = isSubmittingAuth || (isRemoteMode && !isCartReady);
+  const submitDisabled = isSubmittingAuth || (isRemoteMode && cartHydrationStatus === 'hydrating');
   const blockedMessage =
-    isRemoteMode && !isCartReady
-      ? cartHydrationStatus === 'error'
-        ? cartError || 'No fue posible preparar el carrito para iniciar sesión.'
-        : 'Preparando carrito para conservar tus productos antes de autenticarte...'
+    isRemoteMode && cartHydrationStatus === 'hydrating'
+      ? 'Preparando carrito para conservar tus productos antes de autenticarte...'
       : '';
 
   return (

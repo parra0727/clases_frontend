@@ -24,7 +24,7 @@ export async function requestJson(path, options = {}) {
     const response = await fetch(buildApiUrl(path), {
       ...restOptions,
       body: body ? JSON.stringify(body) : undefined,
-      credentials: restOptions.credentials ?? 'include',
+      credentials: restOptions.credentials ?? 'same-origin',
       headers: {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),

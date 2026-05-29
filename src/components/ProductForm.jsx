@@ -146,11 +146,13 @@ function ProductForm({
             onChange={handleChange}
           >
             <option value="">Selecciona una categoría</option>
-            {categories.map((category) => (
-              <option key={category.id} value={String(category.id)}>
-                {category.name}
-              </option>
-            ))}
+            {categories
+              .filter((category) => category.id != null && category.id > 0)
+              .map((category) => (
+                <option key={category.id} value={String(category.id)}>
+                  {category.name}
+                </option>
+              ))}
           </select>
         </label>
 

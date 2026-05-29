@@ -288,8 +288,11 @@ async function hydrateSession() {
 
   const token = loadSessionToken();
 
-  if (!token) {
-    return { ok: true, user: null };
+  // Only call /auth/me when there is both a token AND a persisted user.
+  // A guest cart session saves a token without a user, so this prevents
+  // the guest token from being sent to /auth/me and invalidated on 401.
+  if (!token || !sessionUser) {
+    return { ok: true, user: sessionUser ?? null };
   }
 
   try {
